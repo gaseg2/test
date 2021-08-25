@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+<!-- DB Connection settiond
+	<environments default="development">
+      <environment id="development">
+         <transactionManager type="JDBC" />
+         <dataSource type="POOLED">
+            <property name="driver" value="" />
+            <property name="url" value="" />
+            <property name="username" value="" />
+            <property name="password" value="" />
+         </dataSource>
+      </environment>
+   </environments>
+ -->   
+   
+	<typeAliases>
+		<typeAlias alias="userDTO" type="azaz.nong.model.userDTO" />
+		<typeAlias alias="SellDTO" type="azaz.nong.model.SellDTO" />
+		<typeAlias alias="ReplyDTO" type="azaz.nong.model.ReplyDTO" />
+		<typeAlias alias="BoardDTO" type="azaz.nong.model.BoardDTO" />
+		<typeAlias alias="BreplyDTO" type="azaz.nong.model.BreplyDTO" />
+		<typeAlias alias="MylistDTO" type="azaz.nong.model.MylistDTO" />
+		<typeAlias alias="NewsDTO" type="azaz.nong.model.NewsDTO" />
+		<typeAlias alias="test_userDTO" type="azaz.nong.model.Test_userDTO" />
+	</typeAliases>
+	<mappers> 
+		<mapper resource="/sql/userSQL.xml" />
+		<mapper resource="/sql/sellSQL.xml"/>
+		<mapper resource="/sql/boardSQL.xml"/>
+		<mapper resource="/sql/newsSQL.xml"/>
+		<mapper resource="/sql/mylistSQL.xml"/>
+		<mapper resource="/sql/test_UserSQL.xml"/>
+	</mappers>
+	
+  
+</configuration>

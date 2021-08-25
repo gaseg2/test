@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="sell">
+
+	
+	<!-- 게시글 작성 -->
+	<insert id="insert" parameterType="sellDTO">
+		insert into nong_sell(num, id,writer,kind,title,content,reg,readcount) values (nong_sell_seq.nextval,
+									#{id},
+									#{writer},
+									#{kind},
+									#{title},
+									
+									#{content},
+									sysdate,
+									#{readcount}
+									
+									)
+		
+	</insert>
+	
+	
+	<!-- 댓글 작성 -->
+	<insert id="insertReply">
+		insert into reply (num, re_no, rcontent, id) values(#{num}, reply_seq.nextval, #{rcontent}, #{id})
+	</insert>
+	
+	
+	<!-- 파일 업로드 -->
+	<update id="fileUpdate" parameterType="SellDTO">
+		update nong_sell set img=#{img} where num=#{num}
+	</update>
+	
+	
+	<!-- 댓글 수정 -->
+	<update id="updateReply" parameterType="ReplyDTO">
+		update reply set content = #{content} where re_no = #{re_no}
+	</update>
+	
+	
+	<select id="maxNum" resultType="int">
+		select max(num) from nong_sell
+	</select>
+	
+	
+	<!-- 게시물 리스트 페이징 -->
+	<select id="selectAll" resultType="SellDTO" parameterType="hashmap">
+		<![CDATA[SELECT * from
+		(SELECT num,title,kind,id,WRITEr,img,content,reg,readcount ,rownum r FROM 
+		(SELECT * FROM nong_sell ORDER BY num desc)
+		ORDER BY num) WHERE r >= #{startRow} AND r<= #{endRow}
+		]]>
+	</select>
+	
+	
+	<!-- 전체글 수 -->
+	<select id="allCount" resultType="int">
+		select count(*) from nong_sell
+	</select>
+	
+	
+	<!-- 검색된 게시물 수 -->
+	<select id="searchCount" resultType="int" parameterType="hashmap">
+		select count(*) from nong_sell where ${col} like '%'||#{search}||'%'
+	</select>
+	
+	
+	<!-- 게시물 상세보기 -->
+	<select id="content" resultType="SellDTO" parameterType="int">
+		select * from nong_sell where num=#{value}
+	</select>
+		
+		
+		<!-- 댓글 보기 -->
+	<select id="reply" resultType="ReplyDTO">
+    	SELECT
+    		  num,re_no, rCONTENT, id, REG
+    	 FROM REPLY
+    	WHERE num = #{num}
+	</select>	
+		
+		
+	<!-- 게시글 수정 -->	
+	<update id="update">
+		update nong_sell set title=#{title}, img=#{img}, content=#{content} where num= #{num}
+	</update>
+	
+	
+	<!-- 조회수 -->
+	<update id="readcount" parameterType="int">
+		update nong_sell set readcount = readcount + 1 where num = #{num}
+	</update>
+	
+	
+	<!-- 게시글 삭제 -->
+	<delete id="delete" parameterType="int">
+		delete from nong_sell where num= #{value}
+	</delete>
+	
+	
+	<!-- 댓글 삭제 -->
+	<delete id="deleteReply" parameterType="ReplyDTO">
+		delete from reply where re_no = #{re_no}
+	</delete>
+	
+	
+	<!-- 검색한 게시물리스트 -->
+	<select id="search" resultType="sellDTO" parameterType="hashmap">
+		<!--  select * from nong_sell where ${col} like '%'||#{search}||'%'-->
+		<![CDATA[SELECT * from
+		(SELECT num,title,kind,id,WRITEr,img,content,reg,readcount ,rownum r FROM 
+		(select * from nong_sell where ${col} like '%'||#{search}||'%')
+		ORDER BY num) WHERE r >= #{startRow} AND r<= #{endRow}]]>
+	</select>
+	
+	
+</mapper>
+

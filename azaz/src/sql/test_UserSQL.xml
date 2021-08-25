@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="test">
+
+	<insert id="insert" parameterType="test_userDTO">
+		insert into home_member(id,pw ,name,email) values (
+															#{id},
+															#{pw},
+															#{name},
+															#{email}
+															)
+		
+	</insert>
+	
+	<select id="userCheck" parameterType="String" resultType="int">
+		select count(*) from home_member where id=#{id}
+	</select>
+</mapper>
+

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="news">
+
+	<select id="selectAll" resultType="NewsDTO" parameterType="hashmap">
+		<![CDATA[SELECT * from
+		(SELECT num,news_title,news_writing,news_time,readcount ,rownum r FROM 
+		(SELECT * FROM azaz_news ORDER BY num asc)
+		ORDER BY num) WHERE r >= #{startRow} AND r<= #{endRow}
+		]]>
+	</select>
+
+	<select id="content" resultType="NewsDTO" parameterType="int">
+		select * from azaz_news where num=#{value}
+	</select>
+	
+	<select id="allCount" resultType="int">
+		select count(*) from azaz_news
+	</select>
+	
+	<update id="readcount" parameterType="int">
+		update azaz_news set readcount = readcount + 1 where num = #{num}
+	</update>
+	
+	
+	<insert id="insertReply">
+		insert into nreply (num, re_no, rcontent, id) values(#{num}, reply_seq.nextval, #{rcontent}, #{id})
+	</insert>
+	
+	<update id="updateReply" parameterType="ReplyDTO">
+		update nreply set content = #{content} where re_no = #{re_no}
+	</update>
+	
+	<select id="reply" resultType="ReplyDTO">
+    	SELECT
+    		  num,re_no, rCONTENT, id, REG
+    	 FROM NREPLY
+    	WHERE num = #{num}
+	</select>	
+	
+	<delete id="deleteReply" parameterType="ReplyDTO">
+		delete from nreply where re_no = #{re_no}
+	</delete>
+	
+	
+	<!-- 동일 게시글 추천 여부 검색 -->
+	<select id="rec_check" parameterType="map" resultType="int">
+		select count(*) from ex_rec where board_no = #{no} and rec_id = #{id}
+	</select>
+	
+	<!-- 게시글 추천 -->
+	<insert id="rec_update" parameterType="map">
+		insert into ex_rec values(#{no}, #{id})
+	</insert>
+	
+	<!-- 게시글 추천 취소 -->
+	<delete id="rec_delete" parameterType="map">
+		delete from ex_rec where board_no = #{no} and rec_id = #{id}
+	</delete>
+	
+	<!-- 게시글 추천수 -->
+	<select id="rec_count" parameterType="int" resultType="int">
+		select count(*) from ex_rec where board_no = #{no}
+	</select>
+</mapper>
+

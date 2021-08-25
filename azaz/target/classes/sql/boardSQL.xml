@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="board">
+
+	<insert id="insert" parameterType="BoardDTO">
+		insert into nong_board(num, id,kind,title,content,reg,readcount) values (nong_board_seq.nextval,
+									#{id},
+									#{kind},
+									#{title},
+									#{content},
+									sysdate,
+									#{readcount}
+									)
+		
+	</insert>
+	
+	<insert id="insertReply" parameterType="BreplyDTO">
+		insert into breply (num, re_no, rcontent, id) values(#{num}, breply_seq.nextval, #{rcontent}, #{id})
+	</insert>
+	
+	<update id="fileUpdate" parameterType="BoardDTO">
+		update nong_board set img=#{img} where num=#{num}
+	</update>
+	
+	<update id="updateReply" parameterType="BreplyDTO">
+		update breply set content = #{content} where re_no = #{re_no}
+	</update>
+	
+	<select id="maxNum" resultType="int">
+		select max(num) from nong_board
+	</select>
+	
+	<select id="selectAll" resultType="BoardDTO" parameterType="hashmap">
+		<![CDATA[SELECT * from
+		(SELECT num,title,kind,id,img,content,reg,readcount ,rownum r FROM 
+		(SELECT * FROM nong_board ORDER BY num desc)
+		ORDER BY num) WHERE r >= #{startRow} AND r<= #{endRow}
+		]]>
+	</select>
+	
+	<select id="allCount" resultType="int">
+		select count(*) from nong_board
+	</select>
+	
+	<select id="searchCount" resultType="int" parameterType="hashmap">
+		select count(*) from nong_board where ${col} like '%'||#{search}||'%'
+	</select>
+	
+	<select id="content" resultType="BoardDTO" parameterType="int">
+		select * from nong_board where num=#{value}
+	</select>
+		
+	<select id="reply" resultType="BreplyDTO">
+    	SELECT
+    		  num,re_no, rCONTENT, id, REG
+    	 FROM BREPLY
+    	WHERE num = #{num}
+	</select>	
+		
+	<update id="update">
+		update nong_board set title=#{title}, img=#{img}, content=#{content} where num= #{num}
+	</update>
+	
+	<update id="readcount" parameterType="int">
+		update nong_board set readcount = readcount + 1 where num = #{num}
+	</update>
+	
+	<delete id="delete" parameterType="int">
+		delete from nong_board where num= #{value}
+	</delete>
+	
+	<delete id="deleteReply" parameterType="BreplyDTO">
+		delete from breply where re_no = #{re_no}
+	</delete>
+	
+	<select id="search" resultType="BoardDTO" parameterType="hashmap">
+		<!--  select * from nong_sell where ${col} like '%'||#{search}||'%'-->
+		<![CDATA[SELECT * from
+		(SELECT num,title,kind,id,img,content,reg,readcount ,rownum r FROM 
+		(select * from nong_board where ${col} like '%'||#{search}||'%')
+		ORDER BY num) WHERE r >= #{startRow} AND r<= #{endRow}]]>
+	</select>
+</mapper>
+

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mylist">
+	
+	<!-- 즐겨찾기 추가 -->
+	<insert id="insert" parameterType="MylistDTO">
+		insert into my_list values (my_list_seq.nextval,#{mnum},#{name}, #{my_id})
+	</insert>
+	
+	<!-- 즐겨찾기 리스트 -->
+	<select id="selectAll" resultType="MylistDTO" parameterType="hashmap">
+		<![CDATA[SELECT * from
+		(SELECT num,mnum,name,my_id,rownum r FROM 
+		(SELECT * FROM my_list ORDER BY num desc)
+		ORDER BY num) WHERE my_id=#{my_id} and r >= #{startRow} AND r<= #{endRow}
+		]]>
+	</select>
+	
+	<!-- 즐겨찾기한 아이디 확인 -->
+	<select id="userCheck" resultType="int" parameterType="MylistDTO">
+      select count(*) from my_list where name = #{name} 
+      
+   </select>
+	
+	<!-- 즐겨찾기 삭제 -->
+	<delete id="delete" parameterType="hashmap">
+		delete my_list where name = #{name} and my_id = #{my_id}
+	</delete>
+	
+	
+	<!-- 즐겨찾기한 개수 -->
+	<select id="allCount" resultType="int">
+		select count(*) from my_list
+	</select>
+</mapper>
+

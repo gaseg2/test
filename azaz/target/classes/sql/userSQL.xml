@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="user">
+
+	<!-- parameter는 값을 받을때 -->
+	<insert id="insert_user" parameterType="azaz.nong.model.userDTO">
+		insert into azaz_user values(#{join},#{rating},#{id},#{pw},#{name},#{address},#{phone},null,null,null,null,null,null,sysdate,azaz_user_seq.nextval)
+	</insert>
+	
+	<insert id="insert_user2" parameterType="azaz.nong.model.userDTO">
+		insert into azaz_user values(#{join},#{rating},#{id},#{pw},null,#{address},#{phone},#{bank_num},#{business_sellnum},#{business_holder},#{business_name},#{business_person},#{business_num},sysdate,azaz_user_seq.nextval)
+	</insert>
+	
+	<select id="userCheck" resultType="int" parameterType="azaz.nong.model.userDTO">
+      select count(*) from azaz_user where id = #{id} 
+      <if test="pw != null">
+         and pw = #{pw}
+      </if>
+   </select>
+   
+   <delete id="userDelete" parameterType="azaz.nong.model.userDTO">
+      delete from azaz_user where id = #{id}
+   </delete>
+   
+   <select id="user" resultType="userDTO" parameterType="String">
+      select * from azaz_user where id = #{value}
+   </select>
+   
+	<update id="updateUser" parameterType="userDTO">
+		update azaz_user <set>
+			<if test="pw != null">pw=#{pw},</if>
+			<if test="name != null">name=#{name},</if>
+			<if test="address != null">address=#{address},</if>
+			<if test="phone != null">phone=#{phone}</if>
+		</set>
+		where id=#{id}
+	</update>
+	
+	<update id="updateUser2" parameterType="userDTO">
+		update azaz_user <set>
+			<if test="pw != null">pw=#{pw},</if>
+			<if test="address != null">address=#{address},</if>
+			<if test="phone != null">phone=#{phone},</if>
+			<if test="bank_num != null">bank_num=#{bank_num},</if>
+			<if test="business_sellnum != null">business_sellnum=#{business_sellnum},</if>
+			<if test="business_holder != null">business_holder=#{business_holder},</if>
+			<if test="business_name != null">business_name=#{business_name},</if>
+			<if test="business_person != null">business_person=#{business_person},</if>
+			<if test="business_num != null">business_num=#{business_num}</if>
+		</set>
+		where id=#{id}
+	</update>
+	
+	<select id="searchId" resultType="userDTO" parameterType="String">
+		 select * from azaz_user where phone = #{value}
+	</select>
+
+	<select id="searchPw" resultType="userDTO" parameterType="userDTO">
+		 select * from azaz_user where id = #{id} and phone = #{phone}
+	</select>
+
+	<select id="selectWriter" resultType="sellDTO" parameterType="String">
+      select * from nong_sell where writer= 'q'
+   </select>
+   
+   <select id="searchMap" resultType="userDTO" parameterType="String">
+		 select address from azaz_user where id=#{value}
+	</select>
+	
+	<select id="mainList" resultType="sellDTO" parameterType="sellDTO">
+		select * from nong_sell order by num desc
+	</select>
+   
+</mapper>
+
